@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:eco_pop/instituicao/lista_instituicao.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_pop/page_inicial.dart';
 import 'package:path/path.dart';
@@ -18,60 +19,6 @@ Future<void> main() async {
     home: const Splash(),
     // home: ListarGruposPesquisa()
   ));
-}
-
-class MeusDados extends StatelessWidget {
-  final TextEditingController _email_c = TextEditingController();
-  final TextEditingController _nome_c = TextEditingController();
-  final TextEditingController _data_nascimento_c = TextEditingController();
-  final TextEditingController _instituicao_c = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Meus Dados'),
-      ),
-      body: Column(
-        children: [
-          TextField(
-            controller: _email_c,
-            decoration: InputDecoration(
-              labelText: 'email',
-              hintText: '@@@',
-            ),
-          ),
-          TextField(
-            controller: _nome_c,
-            decoration: InputDecoration(
-              labelText: 'Nome',
-              hintText: 'seu nome',
-            ),
-          ),
-          TextField(
-            controller: _data_nascimento_c,
-            decoration: InputDecoration(
-              labelText: 'Data de Nascimento',
-              hintText: 'data',
-            ),
-          ),
-          TextField(
-            controller: _instituicao_c,
-            decoration: InputDecoration(
-              labelText: 'Instituição',
-              hintText: 'instituição',
-            ),
-          ),
-          MaterialButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Salvar'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class Connection {

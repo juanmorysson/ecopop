@@ -8,6 +8,13 @@ class Instituicao {
 
   @override
   String toString() {
-    return 'Instituicao{uuid: $uuid, id: $id, descricao: $descricao, sigla: $sigla}';
+    return '$descricao - $sigla - $uuid - $id';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Instituicao &&
+              uuid == other.uuid;
+
 }

@@ -1,5 +1,6 @@
 import 'package:eco_pop/database/connection.dart';
 import 'package:eco_pop/user/usuario.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -16,6 +17,9 @@ import 'package:path/path.dart';
   );
 }*/
 
+FirebaseDatabase database = FirebaseDatabase.instance;
+DatabaseReference ref = FirebaseDatabase.instance.ref();
+
 class UsuarioDao {
   Database? _db;
 
@@ -23,19 +27,21 @@ class UsuarioDao {
   static const String _id = 'id';
   static const String _email = 'email';
   static const String _displayName = 'display_name';
+  static const String _instituicao = 'instituicao';
 
 
   static const String tableSql = 'CREATE TABLE $_tabela('
       '$_id INTEGER PRIMARY KEY,'
-      '$_email TEXT'
-      '$_displayName TEXT'
+      '$_email TEXT,'
+      '$_displayName TEXT,'
+      '$_instituicao TEXT'
       ')';
 
   //salvar
   Future<int> save(Usuario usuario) async {
     final x = await userForEmail(usuario.email);
     if (x.isNotEmpty){
-      usuario = Usuario(x.first.id, usuario.email, usuario.displayName);
+      usuario = Usuario(x.first.id, usuario.email, usuario.displayName, usuario.instituicao, usuario.key);
       update(usuario);
     }else{
     _db = await Connection.getDatabase();
@@ -52,6 +58,25 @@ class UsuarioDao {
     return usuarioMap;
   }
 
+  Future<Usuario> userForEmailFB(String email) async {
+    final snapshot = (await ref.child("usuario").get());
+    Usuario user = Usuario(0, "", "", "", "");
+    var i = 0;
+    while(i < snapshot.children.length){
+      DataSnapshot data = snapshot.children.elementAt(i);
+      if(data.child("email").value==email){
+        user = Usuario(
+          0,
+          email,
+          data.child("displayName").value.toString(),
+          data.child("instituicao").value.toString(),
+          data.key!,
+        );
+      }
+      i=i+1;
+    }
+    return user;
+  }
   Future<List<Usuario>> userForEmail(String email) async {
     //final Database db = await getDatabase();
     _db = await Connection.getDatabase();
@@ -78,6 +103,8 @@ class UsuarioDao {
         row[_id],
         row[_email],
         row[_displayName],
+        row[_instituicao],
+        row[""]
       );
       usuarios.add(usuario);
     }
@@ -102,5 +129,24 @@ class UsuarioDao {
     final resultado = await _db!.update(_tabela, _toMap(usuario),
         where: '$_id = ?', whereArgs: [usuario.id]);
     return resultado;
+  }
+
+  Future<int> saveFB(Usuario usuario) async {
+    final postData = {
+      'id': 0,
+      'email': usuario.email,
+      'displayName': usuario.displayName,
+      'instituicao': usuario.instituicao
+    };
+    var newPostKey = usuario.key;
+    if (usuario.key==""){
+      newPostKey =
+        ref.child('usuario').push().key;
+    }
+    //salva no FB
+    final Map<String, Map> updates = {};
+    updates['/usuario/$newPostKey'] = postData;
+    ref.update(updates);
+    return 0;
   }
 }

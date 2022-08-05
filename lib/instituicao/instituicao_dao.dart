@@ -143,6 +143,18 @@ class InstituicaoDao {
     return instituicoes;
   }
 
+  Future<Instituicao> findFB(String uuid) async {
+    final snapshot = (await ref.child('instituicao/$uuid').get());
+    DataSnapshot? data = snapshot;
+      final Instituicao instituicao = Instituicao(
+          uuid: data.key,
+          id: int.parse(data.child("id").value.toString()),
+          descricao: data.child("descricao").value.toString(),
+          sigla: data.child("sigla").value.toString()
+      );
+    return instituicao;
+  }
+
 
   Future<int> deleteFB(Instituicao instituicao) async {
     final a = instituicao.uuid;

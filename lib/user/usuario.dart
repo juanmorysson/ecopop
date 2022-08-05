@@ -2,11 +2,13 @@ class Usuario {
   final int id;
   final String email;
   final String? displayName;
+  final String? instituicao;
+  final String? key;
 
-  Usuario(this.id, this.email, this.displayName);
+  Usuario(this.id, this.email, this.displayName, this.instituicao, this.key);
 
   @override
   String toString() {
-    return 'Usuario{id: $id, email: $email, display_name: $displayName}';
+    return 'email: $email, display_name: $displayName';
   }
 }

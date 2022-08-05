@@ -45,14 +45,16 @@ class PopDao {
 
   static const String _tabelaDados = 'dados_pop';
   static const String _idPop = 'id_pop';
-  static const String _quantidade = 'quantidade';
-  static const String _tempo = 'tempo';
+  static const String _bird = 'bird';
+  static const String _die = 'die';
+  static const String _time = 'time';
 
   static const String tableDadosSql = 'CREATE TABLE $_tabelaDados('
       '$_id INTEGER PRIMARY KEY,'
       '$_idPop INTEGER,'
-      '$_quantidade FLOAT,'
-      '$_tempo FLOAT'
+      '$_bird FLOAT,'
+      '$_die FLOAT,'
+      '$_time FLOAT'
       ')';
 
   List<Pop> _pops = [];
@@ -91,6 +93,7 @@ class PopDao {
       final Pop pop = Pop(
         row[_id],
         row[_descricao],
+        "",
         conceito: row[_conceito],
         fonte: row[_fonte],
         formula: row[_formula],
@@ -133,6 +136,7 @@ class PopDao {
       final Pop pop = Pop(
           int.parse(data.child("id").value.toString()),
           data.child("descricao").value.toString(),
+          data.key.toString(),
           conceito: data.child("conceito").value.toString(),
           experimento: data.child("experimento").value.toString(),
           fonte: data.child("fonte").value.toString(),
@@ -151,11 +155,19 @@ class PopDao {
     final snapshot = (await ref.child(url).get());
     final List<Map<String, dynamic>> dados = [];
     var i=0;
+    var estoque = 0;
     while ( i < snapshot.children.length ){
       DataSnapshot data = snapshot.children.elementAt(i);
       final Map<String, dynamic> dadosMap = Map();
-      dadosMap['tempo'] = data.child("tempo").value.toString();
-      dadosMap['estoque'] = data.child("estoque").value.toString();
+      dadosMap['tempo'] = data.child("t").value.toString();
+      var b = "0";
+      var d = "0";
+      b = data.child("b").value.toString();
+      d = data.child("d").value.toString();
+      dadosMap['bird'] = b;
+      dadosMap['die'] = d;
+      estoque = estoque + int.parse(b) - int.parse(d);
+      dadosMap['estoque'] = estoque.toString();
       dados.add(dadosMap);
       i = i +1;
     }
@@ -169,6 +181,7 @@ class PopDao {
     final Pop pop = Pop(
         int.parse(data.child("id").value.toString()),
         data.child("descricao").value.toString(),
+        data.key.toString(),
         conceito: data.child("conceito").value.toString(),
         experimento: data.child("experimento").value.toString(),
         fonte: data.child("fonte").value.toString(),
@@ -179,6 +192,40 @@ class PopDao {
     return pop;
   }
 
+  Future<int> updateFB(Pop pop, String url) async {
+    final postData = {
+      'id': pop.id,
+      'descricao':pop.descricao,
+      'padrao': pop.padrao,
+      'formula': pop.formula,
+      'fonte': pop.fonte,
+      'experimento': pop.experimento,
+      'conceito': pop.conceito
+    };
+    final Map<String, Map> updates = {};
+    final key = pop.key;
+    updates['$url/$key'] = postData;
+    ref.update(updates);
+    return 0;
+  }
 
+  Future<int> saveFB(Pop pop, String url) async {
+    final postData = {
+      'id': 0,
+      'descricao':pop.descricao,
+      'padrao': pop.padrao,
+      'formula': pop.formula,
+      'fonte': pop.fonte,
+      'experimento': pop.experimento,
+      'conceito': pop.conceito
+    };
+    //salva no FB
+    final Map<String, Map> updates = {};
+    final newPostKey =
+        ref.child(url).push().key;
+    updates['$url/$newPostKey'] = postData;
+    ref.update(updates);
+    return 0;
+  }
 
 }

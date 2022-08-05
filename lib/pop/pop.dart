@@ -8,8 +8,9 @@ class Pop {
   final String? formula;
   final String? experimento;
   final bool padrao;
+  final String key;
 
-  Pop(this.id, this.descricao, {this.conceito, this.fonte, this.formula, this.experimento, this.padrao = false});
+  Pop(this.id, this.descricao, this.key, {this.conceito, this.fonte, this.formula, this.experimento, this.padrao = false});
 
   @override
   String toString() {
@@ -20,9 +21,10 @@ class Pop {
 class DadosPop {
   final int id;
   final int idPop;
-  final Double quantidade;
-  final Double tempo;
+  final Double bird;
+  final Double die;
+  final Double time;
 
-  DadosPop(this.id, this.idPop, this.quantidade, this.tempo);
+  DadosPop(this.id, this.idPop, this.bird, this.die, this.time);
 
 }
