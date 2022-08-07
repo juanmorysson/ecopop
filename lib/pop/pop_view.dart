@@ -77,15 +77,18 @@ class VerPopState extends State<VerPop> {
 
   @override
   Widget build(BuildContext context) {
-    final Pop? pop =
-    ModalRoute.of(context)?.settings.arguments as Pop?;
+    List<Object> args =
+    ModalRoute.of(context)?.settings.arguments as List<Object>;
+    final Pop? pop = args[0] as Pop?;
+    final String? url = args[1] as String;
+    var keyPop = pop!.key.toString();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Proj População'),
       ),
       body:  FutureBuilder<List<Map<String, dynamic>>>(
-                      future: _popDao.findDadosFB('projetos_padrao/'+pop!.key+'/dados'),
+                      future: _popDao.findDadosFB('$url$keyPop/dados'),
                       builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.none:

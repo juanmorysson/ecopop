@@ -1,0 +1,28 @@
+# Validações
+...
+
+# Meus Projetos
+- add dados
+    - ListView  (rolar só a tabela) ??????
+    - aceitar double no tempo (keyboard)
+    - organizar tabela por tempo???
+    - enxugar layout tabela (padding top e button) - ok
+- validar só com cadastro de meus dados - ok
+- add o botão pra chamar pop_view no add Dados - ok
+# View Projetos
+    - gráfico com pontos;
+    - fazer a predição estatisticamente (escolhendo o melhor modelo)
+    - fazer funcionar prdições;
+    - listView não rola
+
+# melhorar Layout Inicial
+    - tela login - ok
+    - carregando ...
+    - splash com animação????
+
+
+# exportar lista excel
+
+# criar "widgets padrão"
+
+# criar tela info

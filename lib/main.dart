@@ -4,6 +4,7 @@ import 'package:eco_pop/instituicao/lista_instituicao.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_pop/page_inicial.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,7 +13,10 @@ import 'grupo-pesquisa/lista_grupo.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MaterialApp(
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp]);
+  runApp(
+      MaterialApp(
     theme: ThemeData(
       primarySwatch: Colors.green
     ),

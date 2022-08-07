@@ -151,23 +151,24 @@ class PopDao {
   }
 
   Future<List<Map<String, dynamic>>> findDadosFB(String url) async {
-    //Exemplo: url = 'projetos_padrao/EXPO'
     final snapshot = (await ref.child(url).get());
     final List<Map<String, dynamic>> dados = [];
     var i=0;
     var estoque = 0;
     while ( i < snapshot.children.length ){
       DataSnapshot data = snapshot.children.elementAt(i);
+      print(data.value);
       final Map<String, dynamic> dadosMap = Map();
-      dadosMap['tempo'] = data.child("t").value.toString();
+      dadosMap['tempo'] = data.child("time").value.toString();
       var b = "0";
       var d = "0";
-      b = data.child("b").value.toString();
-      d = data.child("d").value.toString();
+      b = data.child("bird").value.toString();
+      d = data.child("die").value.toString();
       dadosMap['bird'] = b;
       dadosMap['die'] = d;
       estoque = estoque + int.parse(b) - int.parse(d);
       dadosMap['estoque'] = estoque.toString();
+      dadosMap['key'] = data.key;
       dados.add(dadosMap);
       i = i +1;
     }
@@ -225,6 +226,28 @@ class PopDao {
         ref.child(url).push().key;
     updates['$url/$newPostKey'] = postData;
     ref.update(updates);
+    return 0;
+  }
+
+  Future<int> saveDadoFB(DadosPop dado, String url) async {
+    final postData = {
+      'id': 0,
+      'idPop':dado.idPop,
+      'bird': dado.bird,
+      'die': dado.die,
+      'time': dado.time,
+    };
+    //salva no FB
+    final Map<String, Map> updates = {};
+    final newPostKey =
+        ref.child(url).push().key;
+    updates['$url/$newPostKey'] = postData;
+    ref.update(updates);
+    return 0;
+  }
+
+  Future<int> deleteDadoFB(String url, String Key) async {
+    ref.child(url).child(Key).remove();
     return 0;
   }
 

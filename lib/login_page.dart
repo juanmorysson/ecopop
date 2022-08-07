@@ -7,6 +7,7 @@ import 'package:eco_pop/user/cadastro_usuario.dart';
 import 'package:eco_pop/user/usuario.dart';
 import 'package:eco_pop/user/usuario_dao.dart';
 import 'package:eco_pop/utils/network_status_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:convert' show json;
@@ -114,7 +115,16 @@ class _LoginPageState extends State<LoginPage> {
         body: ConstrainedBox(
           constraints: const BoxConstraints.expand(),
           child: _buildBody(),
-        ));
+        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed:() {
+          //sobre o projeto
+        },
+        backgroundColor: Colors.lightGreen[400],
+        child: Icon(Icons.info, size: MediaQuery.of(context).size.height*0.04),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      ),
+    );
   }
 
   Widget _buildBody() {
@@ -137,13 +147,14 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                             width: MediaQuery
                                 .of(context)
                                 .size
-                                .width * 0.7,
+                                .width * 0.78,
                             height: MediaQuery
                                 .of(context)
                                 .size
@@ -157,112 +168,181 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                         ),
-                        FloatingActionButton.extended(
+                        FloatingActionButton(
                           onPressed: _handleSignOut,
-                          label: const Text(""),
                           backgroundColor: Colors.green,
-                          icon: Icon(Icons.logout),
+                          child: Icon(Icons.logout),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            ),//0.16
+            Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.02)), //0.02
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.8,
+              height: MediaQuery.of(context).size.height*0.02,
+              child: Text("Menu:", textAlign: TextAlign.right),
+            ), //0.02
+            Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.02)), //0.02
+            SizedBox(
+              height: MediaQuery.of(context).size.height*0.24,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.4,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.4,
+                    child: FloatingActionButton(
+                      onPressed:() {
+                        final Future future =
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return ListarPop();
+                        }));
+                        future.then((grupo) {
+                          //teste
+                        });
+                      },
+                      backgroundColor: Colors.lightGreen[900],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.document_scanner, size: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.2),
+                          Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.02)),
+                          Text("Projetos Públicos")
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(right: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.05)),
+                  SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.4,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.4,
+                    child: FloatingActionButton(
+                      onPressed:() {
+                        final Future future =
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListarPop(),
+                          settings: RouteSettings(arguments: user),
+                        ));
+                        future.then((grupo) {
+                          //teste
+                        });
+                      },
+                      backgroundColor: Colors.lightGreen,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.document_scanner, size: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.2),
+                          Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.02)),
+                          Text("Meus Projetos")
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                    ),
+                  ),
+                ],
+              ),
+            ), //0.24
+            Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.02)), //0.02
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.8,
+              height: MediaQuery.of(context).size.height*0.24,
+              child:             Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Cadastros:"),
+                  Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                  SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.6,
+                    height: 50,
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        final Future future =
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MeusDados(),
+                          settings: RouteSettings(arguments: _currentUser),
+                        ));
+                        future.then((usuario) {
+                          //teste
+                        });
+                      },
+                      label: const Text("Meus Dados"),
+                      backgroundColor: Colors.amber,
+                      icon: Icon(Icons.account_box),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                  SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.6,
+                    height: 50,
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        final Future future =
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return ListarInstituicao();
+                        }));
+                        future.then((instituicao) {});
+                      },
+                      label: const Text("Instituição"),
+                      backgroundColor: Color.fromRGBO(204, 153, 51, 1),
+                      icon: Icon(Icons.account_balance),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                    ),
+                  ),
+
+                ],
+              ),
+            ), //0.24
+            Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.9,
-                  height: 60,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      final Future future =
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MeusDados(),
-                        settings: RouteSettings(arguments: _currentUser),
-                      ));
-                      future.then((usuario) {
-                        //teste
-                      });
-                    },
-                    label: const Text("Meus Dados"),
-                    backgroundColor: Colors.green,
-                    icon: Icon(Icons.verified_user),
+                  Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.height*0.16,
+                    height: MediaQuery.of(context).size.height*0.16,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                        alignment: Alignment.center,
+                        image: AssetImage('assets/ecopop.png'),
+                      ), //AssetImage("assets/Serenity.png"),
+                    ),
                   ),
-                ),
-                Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.9,
-                  height: 60,
-                  child: FloatingActionButton.extended(
-                    onPressed:() {
-                      final Future future =
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return ListarPop();
-                      }));
-                      future.then((grupo) {
-                      //teste
-                      });
-                      },
-                    label: const Text("Projetos"),
-                    backgroundColor: Colors.green,
-                    icon: Icon(Icons.document_scanner),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.9,
-                  height: 60,
-                  child: FloatingActionButton.extended(
-                    onPressed:() {
-                      final Future future =
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListarPop(),
-                        settings: RouteSettings(arguments: user),
-                      ));
-                      future.then((grupo) {
-                        //teste
-                      });
-                    },
-                    label: const Text("Meus Projetos"),
-                    backgroundColor: Colors.green,
-                    icon: Icon(Icons.document_scanner),
-                  ),
-                ),
-
-                Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.9,
-                  height: 60,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      final Future future =
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return ListarInstituicao();
-                      }));
-                      future.then((instituicao) {});
-                    },
-                    label: const Text("Instituição"),
-                    backgroundColor: Colors.green,
-                    icon: Icon(Icons.account_balance),
-                  ),
-                ),
-
               ],
             )
+
           ]);
     } else {
       return Center(
@@ -273,13 +353,13 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    width: 200.0,
-                    height: 200.0,
+                    width: MediaQuery.of(context).size.height*0.14,
+                    height: MediaQuery.of(context).size.height*0.14,
                     decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                      shape: BoxShape.rectangle,
                       image: DecorationImage(
                         alignment: Alignment.center,
-                        image: AssetImage('assets/ECOPoP.png'),
+                        image: AssetImage('assets/ecopop.png'),
                       ), //AssetImage("assets/Serenity.png"),
                     ),
                   ),
@@ -289,13 +369,14 @@ class _LoginPageState extends State<LoginPage> {
                   FloatingActionButton.extended(
                     onPressed: _handleSignIn,
                     label: Text(
-                      "Login",
+                      "Entrar",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                   ),
                 ]),
           )); // This trailing comma makes auto-formatting nicer for build methods.

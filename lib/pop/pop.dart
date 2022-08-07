@@ -14,16 +14,16 @@ class Pop {
 
   @override
   String toString() {
-    return 'Expo{id: $id, descricao: $descricao}';
+    return 'Dado{id: $id, descricao: $descricao}';
   }
 }
 
 class DadosPop {
   final int id;
   final int idPop;
-  final Double bird;
-  final Double die;
-  final Double time;
+  final double bird;
+  final double die;
+  final double time;
 
   DadosPop(this.id, this.idPop, this.bird, this.die, this.time);
 
