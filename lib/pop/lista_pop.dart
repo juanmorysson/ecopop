@@ -33,7 +33,8 @@ class ListarPopState extends State<ListarPop> {
       url = 'usuario/$key/projetos/';
       _pops = await _popDao.findAllFB(url!);
     }else{
-      _pops = await _popDao.findAllFB('projetos_padrao');
+      url = 'projetos_padrao/';
+      _pops = await _popDao.findAllFB(url!);
       ver = false;
     }
   }
@@ -50,15 +51,21 @@ class ListarPopState extends State<ListarPop> {
           case ConnectionState.none:
             break;
           case ConnectionState.waiting:
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  Text('Carregando!')
-                ],
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: Text('Crescimento Populacional'),
               ),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Carregando!')
+                  ],
+                ),
+              )
             );
             break;
           case ConnectionState.active:
@@ -90,6 +97,7 @@ class ListarPopState extends State<ListarPop> {
                                         List<Object> args = [];
                                         args.add(pop);
                                         args.add(url!);
+
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(

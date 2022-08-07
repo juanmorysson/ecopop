@@ -128,8 +128,8 @@ class FormDadosPopState extends State<FormDadosPop> {
                       final DadosPop dadoCD = DadosPop(
                           0,
                           pop.id,
-                          double.parse(_d_c.text),
                           double.parse(_b_c.text),
+                          double.parse(_d_c.text),
                           double.parse(_t_c.text),
                           );
                       //update

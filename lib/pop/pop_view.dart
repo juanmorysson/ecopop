@@ -6,6 +6,7 @@ import 'package:eco_pop/pop/pop_dao.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:simple_line_chart/simple_line_chart.dart';
 
 class VerPop extends StatefulWidget {
@@ -16,12 +17,14 @@ class VerPop extends StatefulWidget {
 }
 
 class VerPopState extends State<VerPop> {
+  final TextEditingController _tempo_c = TextEditingController();
   final PopDao _popDao = PopDao();
   late final List<Map<String, dynamic>> snapshot;
   var tempo = 0.0;
   var predicao = 0.0;
   var t_dif = 0.0;
   var r = 0.0;
+  var _tab = 0;
 
   @override
   void initState() {
@@ -60,8 +63,10 @@ class VerPopState extends State<VerPop> {
       var t = (t_dif/3)*i + double.parse(dados.elementAt(0)['tempo']);
       var e = (r*t*t)/t_dif;
       if (i==0){
-        tempo = t;
-        predicao = e;
+        if(tempo == t) {
+          tempo = t;
+          predicao = e;
+        }
       }
       dataPoints.add(DataPoint(x: t, y: e));
       i = i +1;
@@ -113,6 +118,7 @@ class VerPopState extends State<VerPop> {
                               MaterialApp(
                                home: DefaultTabController(
                                  length: 3,
+                                 initialIndex: _tab,
                                  child: Scaffold(
                                    appBar: TabBar(
                                      tabs: [Tab(text: "Dados",), Tab(text: "Gráfico",), Tab(text: "Predição",)],
@@ -121,6 +127,7 @@ class VerPopState extends State<VerPop> {
                                    ),
                                    body:TabBarView(
                                        children: [
+                                         //Dados
                                          Container(
                                            child: ListView(
                                                children: [
@@ -184,8 +191,8 @@ class VerPopState extends State<VerPop> {
                                                  ),
                                                ]
                                            ),
-                                         )
-                                         ,
+                                         ),
+                                         //Gráfico
                                          Column(
                                              children: [
                                                MaterialButton(
@@ -207,6 +214,7 @@ class VerPopState extends State<VerPop> {
                                                )
                                              ]
                                          ),
+                                         //Predição
                                          Column(
                                              children: [
                                                Card(
@@ -225,14 +233,21 @@ class VerPopState extends State<VerPop> {
                                                ),
                                                Card(
                                                  child: ListTile(
-                                                   title: Text("Prdição para o tempo = "+tempo.toString()),
-                                                   subtitle: Text(predicao.toString()),
+                                                   title: Text("Predição para o tempo = "+tempo.toString()),
+                                                   subtitle: Text(predicao.toString(),
+                                                     style: TextStyle(
+                                                         color: Colors.amber,
+                                                         fontWeight: FontWeight.bold,
+                                                         fontSize: 24.0
+                                                     ),),
                                                  ),
                                                ),
                                                Column(
                                                      children: [
                                                        TextFormField(
-                                                         controller: null,
+                                                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                                         keyboardType: TextInputType.number,
+                                                         controller: _tempo_c,
                                                          style: TextStyle(
                                                            fontSize: 20.0,
                                                          ),
@@ -246,8 +261,12 @@ class VerPopState extends State<VerPop> {
                                                          padding: const EdgeInsets.all(8.0),
                                                          child: ElevatedButton(
                                                            onPressed: () {
-                                                             var e = (r*113*113)/t_dif;
-                                                             print(e);
+                                                             tempo = double.parse(_tempo_c.text);
+                                                             _tab = 2;
+                                                             var e = (r*tempo*tempo)/t_dif;
+                                                             setState(()  {
+                                                              predicao = double.parse(e.toString());
+                                                             });
                                                            },
                                                            child: Text('Preditar'),
                                                          ),
@@ -256,8 +275,6 @@ class VerPopState extends State<VerPop> {
                                                ),
                                              ]
                                          ),
-
-
                                        ],
 
                                    )
