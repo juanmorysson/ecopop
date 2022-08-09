@@ -9,22 +9,35 @@
     - enxugar layout tabela (padding top e button) - ok
 - validar só com cadastro de meus dados - ok
 - add o botão pra chamar pop_view no add Dados - ok
+- add cadastro de estoque inicial
 
 # View Projetos
-    - gráfico com pontos
+    - gráfico com pontos = ok
     - fazer a predição estatisticamente (escolhendo o melhor modelo)
     - fazer funcionar predições - ok
     - listView não rola
     - ao alterar tá pagando os dados !!!!!!!!!!!!
 
-# melhorar Layout Inicial
-    - tela login - ok
-    - carregando ...
-    - splash com animação????
+    - inserir gráficos separados só de natalidade e só de mortalidade - pag 46 e 47 - ok
+    - inserir gráfico de tamanho da população - pág 48 - ok
+
+
 
 
 # exportar lista excel
 
 # criar "widgets padrão"
 
-# criar tela info
+# info de cada modelo
+    - pressuposto do modelo de Gotelli
+    - add exemplos empíricos do livro
+
+### 100% feitos
+
+# criar tela info - ok
+
+# melhorar Layout Inicial - ok
+    - tela login - ok
+    - carregando ... - ok
+    - splash com animação???? - ok
+

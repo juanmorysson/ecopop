@@ -1,18 +1,15 @@
-import 'package:eco_pop/grupo-pesquisa/lista_grupo.dart';
+import 'package:eco_pop/info.dart';
 import 'package:eco_pop/instituicao/lista_instituicao.dart';
-import 'package:eco_pop/main.dart';
+import 'package:eco_pop/page_inicial.dart';
 import 'package:eco_pop/pop/lista_pop.dart';
-import 'package:eco_pop/pop/pop_view.dart';
 import 'package:eco_pop/user/cadastro_usuario.dart';
-import 'package:eco_pop/user/usuario.dart';
-import 'package:eco_pop/user/usuario_dao.dart';
 import 'package:eco_pop/utils/network_status_service.dart';
+import 'package:eco_pop/utils/teste_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:convert' show json;
 import 'package:http/http.dart' as http;
-import 'dart:developer';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [
@@ -110,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Login eCoPoP'),
+          title: const Text('eCoPoP'),
         ),
         body: ConstrainedBox(
           constraints: const BoxConstraints.expand(),
@@ -119,6 +116,20 @@ class _LoginPageState extends State<LoginPage> {
       floatingActionButton: FloatingActionButton(
         onPressed:() {
           //sobre o projeto
+          Navigator.of(context)
+              .push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  //Splash(),
+                  Info(),
+                  //MyHomePage(title: "teste"),
+              settings:
+              RouteSettings(arguments: null),
+            ),
+          )
+              .then(
+                (value) => setState(() {}),
+          );
         },
         backgroundColor: Colors.lightGreen[400],
         child: Icon(Icons.info, size: MediaQuery.of(context).size.height*0.04),

@@ -38,18 +38,19 @@ class _SplashState extends State<Splash> {
           children: [
             Container(
               alignment: Alignment.center,
-              width: 200.0,
-              height: 200.0,
+              width: 300.0,
+              height: 300.0,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: BoxShape.rectangle,
                 image: DecorationImage(
                   alignment: Alignment.center,
-                  image: AssetImage('assets/ecopop.png'),
+                  image: AssetImage('assets/splash.gif'),
                 ), //AssetImage("assets/Serenity.png"),
               ),
             ),
             SizedBox(
               height: 60,
+
             ),
             CircularProgressIndicator(
               color: Colors.green,
