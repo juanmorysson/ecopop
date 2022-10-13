@@ -1,5 +1,6 @@
 import 'package:eco_pop/info.dart';
 import 'package:eco_pop/instituicao/lista_instituicao.dart';
+import 'package:eco_pop/lista_tipo_projs.dart';
 import 'package:eco_pop/page_inicial.dart';
 import 'package:eco_pop/pop/lista_pop.dart';
 import 'package:eco_pop/user/cadastro_usuario.dart';
@@ -254,7 +255,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: FloatingActionButton(
                       onPressed:() {
                         final Future future =
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListarPop(),
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListarTipoProjs(),
                           settings: RouteSettings(arguments: user),
                         ));
                         future.then((grupo) {

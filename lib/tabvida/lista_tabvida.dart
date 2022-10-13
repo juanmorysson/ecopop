@@ -1,27 +1,29 @@
-import 'package:eco_pop/grupo-pesquisa/cadastro_grupo.dart';
-import 'package:eco_pop/grupo-pesquisa/grupo.dart';
-import 'package:eco_pop/grupo-pesquisa/grupo_dao.dart';
 import 'package:eco_pop/pop/cadastro_dados_pop.dart';
 import 'package:eco_pop/pop/cadastro_pop.dart';
 import 'package:eco_pop/pop/pop.dart';
 import 'package:eco_pop/pop/pop_dao.dart';
 import 'package:eco_pop/pop/pop_view.dart';
+import 'package:eco_pop/tabvida/cadastro_classe_tabvida.dart';
+import 'package:eco_pop/tabvida/cadastro_tabvida.dart';
+import 'package:eco_pop/tabvida/tabvida.dart';
+import 'package:eco_pop/tabvida/tabvida_dao.dart';
+import 'package:eco_pop/tabvida/tabvida_view.dart';
 import 'package:eco_pop/user/usuario.dart';
 import 'package:eco_pop/user/usuario_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class ListarPop extends StatefulWidget {
+class ListarTabVida extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ListarPopState();
+    return ListarTabVidaState();
   }
 }
 
-class ListarPopState extends State<ListarPop> {
-  final PopDao _popDao = PopDao();
+class ListarTabVidaState extends State<ListarTabVida> {
+  final TabVidaDao _tabVidaDao = TabVidaDao();
   final UsuarioDao _userDao = UsuarioDao();
-  List<Pop>? _pops;
+  List<TabVida>? _tabs;
   Usuario? _usuario;
   String? url;
   bool ver = true;
@@ -30,11 +32,11 @@ class ListarPopState extends State<ListarPop> {
     if(user!=null) {
       _usuario = await _userDao.userForEmailFB(user.email);
       var key = _usuario!.key;
-      url = 'usuario/$key/projetos/pop/';
-      _pops = await _popDao.findAllFB(url!);
+      url = 'usuario/$key/projetos/tab/';
+      _tabs = await _tabVidaDao.findAllFB(url!);
     }else{
-      url = 'projetos_padrao/pop/';
-      _pops = await _popDao.findAllFB(url!);
+      url = 'projetos_padrao/tab/';
+      _tabs = await _tabVidaDao.findAllFB(url!);
       ver = false;
     }
   }
@@ -54,7 +56,7 @@ class ListarPopState extends State<ListarPop> {
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
-                title: Text('Crescimento Populacional'),
+                title: Text('Tabela de Vida'),
               ),
               body: Center(
                 child: Column(
@@ -74,18 +76,18 @@ class ListarPopState extends State<ListarPop> {
             return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
-                  title: Text('Crescimento Populacional'),
+                  title: Text('Tabela de Vida'),
                 ),
                 body:  ListView.builder(
                   itemBuilder: (context, index) {
-                    final Pop pop = _pops![index];
+                    final TabVida tab = _tabs![index];
                     //return ItensGruposPesquisa(grupo);
                     return MaterialButton(
                       onPressed: () {},
                       child: Card(
                         child: ListTile(
-                          title: Text(pop.descricao),
-                          subtitle: Text(pop.experimento.toString()),
+                          title: Text(tab.descricao),
+                          subtitle: Text(tab.fonte.toString()),
                           trailing: Container(
                             width: 145,
                             child: Row(
@@ -95,14 +97,14 @@ class ListarPopState extends State<ListarPop> {
                                   child: IconButton(
                                       onPressed: () {
                                         List<Object> args = [];
-                                        args.add(pop);
+                                        args.add(tab);
                                         args.add(url!);
 
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                VerPop(),
+                                                VerTabVida(),
                                             settings:
                                             RouteSettings(arguments: args),
                                           ),
@@ -120,13 +122,13 @@ class ListarPopState extends State<ListarPop> {
                                   child: IconButton(
                                       onPressed: () {
                                         List<Object> args = [];
-                                        args.add(pop);
+                                        args.add(tab);
                                         args.add(url!);
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                FormDadosPop(),
+                                                FormClasseTabVida(),
                                             settings:
                                             RouteSettings(arguments: args),
                                           ),
@@ -138,19 +140,18 @@ class ListarPopState extends State<ListarPop> {
                                       icon: Icon(Icons.data_array_sharp),
                                       color: Colors.orange[300])
                                 ),
-
                                 Visibility(
                                   visible: ver,
                                   child: IconButton(
                                       onPressed: () {
                                         List<Object> args = [];
-                                        args.add(pop);
+                                        args.add(tab);
                                         args.add(url!);
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                FormularioPop(),
+                                                FormularioTabVida(),
                                             settings:
                                             RouteSettings(arguments: args),
                                           ),
@@ -167,13 +168,13 @@ class ListarPopState extends State<ListarPop> {
                                     child: IconButton(
                                         onPressed: () {
                                           List<Object> args = [];
-                                          args.add(pop);
+                                          args.add(tab);
                                           args.add(url!);
                                           Navigator.of(context)
                                               .push(
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  VerPop(),
+                                                  VerTabVida(),
                                               settings:
                                               RouteSettings(arguments: args),
                                             ),
@@ -192,13 +193,13 @@ class ListarPopState extends State<ListarPop> {
                       ),
                     );
                   },
-                  itemCount: _pops!.length,
+                  itemCount: _tabs!.length,
                ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   List<Object> args = [];
-                  Pop? fakepop = Pop(0, "", "-0");
-                  args.add(fakepop);
+                  TabVida? faketab = TabVida(0, "", "-0");
+                  args.add(faketab);
                   args.add(url!);
                   if(_usuario!.key==""){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -208,7 +209,7 @@ class ListarPopState extends State<ListarPop> {
                     Navigator.of(context)
                         .push(
                       MaterialPageRoute(
-                        builder: (context) => FormularioPop(),
+                        builder: (context) => FormularioTabVida(),
                         settings: RouteSettings(arguments: args),
                       ),
                     )

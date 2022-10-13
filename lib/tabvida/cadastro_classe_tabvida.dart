@@ -1,11 +1,14 @@
 import 'package:eco_pop/pop/pop.dart';
 import 'package:eco_pop/pop/pop_dao.dart';
 import 'package:eco_pop/pop/pop_view.dart';
+import 'package:eco_pop/tabvida/tabvida.dart';
+import 'package:eco_pop/tabvida/tabvida_dao.dart';
+import 'package:eco_pop/tabvida/tabvida_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FormDadosPop extends StatefulWidget {
+class FormClasseTabVida extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     return Container();
@@ -13,27 +16,27 @@ class FormDadosPop extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return FormDadosPopState();
+    return FormClasseTabVidaState();
   }
 }
 
-class FormDadosPopState extends State<FormDadosPop> {
-  final TextEditingController _t_c = TextEditingController();
-  final TextEditingController _b_c = TextEditingController();
-  final TextEditingController _d_c = TextEditingController();
+class FormClasseTabVidaState extends State<FormClasseTabVida> {
+  final TextEditingController _i_c = TextEditingController();
+  final TextEditingController _f_c = TextEditingController();
+  final TextEditingController _s_c = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final PopDao _popDao = PopDao();
+  final TabVidaDao _tabVidaDao = TabVidaDao();
 
   @override
   Widget build(BuildContext context) {
     List<Object> args =
     ModalRoute.of(context)?.settings.arguments as List<Object>;
-    final Pop? pop = args[0] as Pop?;
+    final TabVida? tab = args[0] as TabVida?;
     final String? url = args[1] as String;
-    var keyPop = pop!.key.toString();
+    var keyTab = tab!.key.toString();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dados - Projeto Pop'),
+        title: Text('Classes - Projeto Tab Vida'),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 20.0),
@@ -44,11 +47,11 @@ class FormDadosPopState extends State<FormDadosPop> {
             Row(
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width*0.80,
+                  width: MediaQuery.of(context).size.width*0.96,
                   child: Card(
                     child: ListTile(
-                        title: Text(pop!=null?pop.descricao:""),
-                        subtitle: Text(pop!=null?pop.experimento.toString():"")
+                        title: Text(tab!=null?tab.descricao:""),
+                        subtitle: Text(tab!=null?tab.fonte.toString():"")
                     ),
                   ),
                 ),
@@ -62,9 +65,9 @@ class FormDadosPopState extends State<FormDadosPop> {
                   child: TextField(
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     keyboardType: TextInputType.number,
-                    controller: _t_c,
+                    controller: _i_c,
                     decoration: InputDecoration(
-                      labelText: 'Tempo',
+                      labelText: 'Idade Início',
                       hintText: '',
                     ),
                   ),
@@ -74,9 +77,9 @@ class FormDadosPopState extends State<FormDadosPop> {
                   child: TextField(
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     keyboardType: TextInputType.number,
-                    controller: _b_c,
+                    controller: _f_c,
                     decoration: InputDecoration(
-                      labelText: 'Nasc.',
+                      labelText: 'Idade Final',
                       hintText: '',
                     ),
                   ),
@@ -86,14 +89,15 @@ class FormDadosPopState extends State<FormDadosPop> {
                   child: TextField(
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     keyboardType: TextInputType.number,
-                    controller: _d_c,
+                    controller: _s_c,
                     decoration: InputDecoration(
-                      labelText: 'Mortes',
+                      labelText: 'Sobreviventes',
                       hintText: '',
                     ),
                   ),
                   width: MediaQuery.of(context).size.width*0.31,
-                )
+                ),
+
               ],
             ),
 
@@ -102,16 +106,16 @@ class FormDadosPopState extends State<FormDadosPop> {
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                      final DadosPop dadoCD = DadosPop(
+                      final ClasseIdadeTabVida classeCD = ClasseIdadeTabVida(
                           0,
-                          pop.id,
-                          double.parse(_b_c.text),
-                          double.parse(_d_c.text),
-                          double.parse(_t_c.text),
-                          );
+                          tab.id,
+                          int.parse(_i_c.text),
+                          int.parse(_f_c.text),
+                          int.parse(_s_c.text),
+                      );
                       //update
-                      _popDao
-                          .saveDadoFB(dadoCD, '$url$keyPop/dados')
+                      _tabVidaDao
+                          .saveClasseFB(classeCD, '$url$keyTab/classes')
                           .then(
                               //(id) => Navigator.pop(context)
                           (id) => setState((){})
@@ -126,27 +130,17 @@ class FormDadosPopState extends State<FormDadosPop> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width*0.17,
-                    child: Text("Tempo", style: TextStyle(fontWeight: FontWeight.bold)),
+                    width: MediaQuery.of(context).size.width*0.45,
+                    child: Text("Classe", style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.30,
+                    child: Text("Sobreviventes", style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width*0.17,
-                    child: Text("Nasci..", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.17,
-                    child: Text("Mortes", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.17,
-                    child: Text("Estoque", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.15,
                     child: Text("", style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
-
-
                 ],
               ),
             ),
@@ -155,7 +149,7 @@ class FormDadosPopState extends State<FormDadosPop> {
               child:
                FutureBuilder<List<Map<String, dynamic>>>(
                   initialData: [],
-                  future: _popDao.findDadosFB('$url$keyPop/dados'),
+                  future: _tabVidaDao.findClassesFB('$url$keyTab/classes'),
                   builder: (context, snapshot) {
                     final List<Map<String, dynamic>> dados = snapshot.data ?? [];
                     switch (snapshot.connectionState) {
@@ -185,27 +179,19 @@ class FormDadosPopState extends State<FormDadosPop> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.17,
-                                      child: Text(dados.elementAt(index)['tempo'], style: TextStyle(color: Colors.black),),
+                                      width: MediaQuery.of(context).size.width*0.45,
+                                      child: Text("De "+dados.elementAt(index)['idade_inicio']+" até "+dados.elementAt(index)['idade_fim'], style: TextStyle(color: Colors.black),),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.30,
+                                      child: Text(dados.elementAt(index)['sobreviventes'], style: TextStyle(color: Colors.black),),
                                     ),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width*0.17,
-                                      child: Text(dados.elementAt(index)['bird']),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.17,
-                                      child: Text(dados.elementAt(index)['die']),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.17,
-                                      child: Text(dados.elementAt(index)['estoque']),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.15,
                                       child: IconButton(
                                         onPressed: () {
                                           setState(()  {
-                                            _popDao.deleteDadoFB('$url$keyPop/dados', dados.elementAt(index)['key']);
+                                            _tabVidaDao.deleteClasseFB('$url$keyTab/classes', dados.elementAt(index)['key']);
                                           });
                                         },
                                         icon: Icon(Icons.delete, size: 18.0),
