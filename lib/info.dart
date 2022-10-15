@@ -1,4 +1,3 @@
-import 'package:eco_pop/utils/teste_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -105,8 +104,8 @@ class InfoState extends State<Info> {
                child: ListTile(
                  title: Text("Mestrando Juan Morysson Viana Marciano"),
                  subtitle: Text("Professor IFPI e Aluno IFGoiano"),
-                 onTap: () {
-                 Navigator.of(context)
+                 onTap: () {},
+                /* Navigator.of(context)
                    .push(
                      MaterialPageRoute(
                        builder: (context) =>
@@ -119,7 +118,7 @@ class InfoState extends State<Info> {
                    ).then(
                      (value) => setState(() {}),
                    );
-                 },
+                 }, */
                ),
              ),
              Card(

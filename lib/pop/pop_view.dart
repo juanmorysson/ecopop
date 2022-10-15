@@ -86,7 +86,7 @@ class VerPopState extends State<VerPop> {
       }
       dataPoints.add(FlSpot(t, e));
       i = i +1;
-      print("tempo: "+t.toString() + "e: "+e.toString());
+      print("Tempo: "+t.toString() + "e: "+e.toString());
     }
     return dataPoints;
   }

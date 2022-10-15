@@ -1,11 +1,8 @@
 import 'package:eco_pop/info.dart';
 import 'package:eco_pop/instituicao/lista_instituicao.dart';
 import 'package:eco_pop/lista_tipo_projs.dart';
-import 'package:eco_pop/page_inicial.dart';
-import 'package:eco_pop/pop/lista_pop.dart';
 import 'package:eco_pop/user/cadastro_usuario.dart';
 import 'package:eco_pop/utils/network_status_service.dart';
-import 'package:eco_pop/utils/teste_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -218,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed:() {
                         final Future future =
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return ListarPop();
+                          return ListarTipoProjs();
                         }));
                         future.then((grupo) {
                           //teste

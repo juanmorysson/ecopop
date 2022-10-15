@@ -1,6 +1,5 @@
 import 'package:eco_pop/database/connection.dart';
-import 'package:eco_pop/pop/pop.dart';
-import 'package:eco_pop/tabvida/tabvida.dart';
+import 'package:eco_pop/comp/comp.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -13,8 +12,8 @@ Future<Database> getDatabase() async {
   return openDatabase(
     path,
     onCreate: (db, version) {
-      db.execute(TabVidaDao.tableSql);
-      db.execute(TabVidaDao.tableClasseSql);
+      db.execute(CompDao.tableSql);
+      db.execute(CompDao.tableDadosSql);
     },
     version: 1,
     //limpar o banco de dados - primeiro precisa alterar a versão
@@ -22,77 +21,85 @@ Future<Database> getDatabase() async {
   );
 }
 
-class TabVidaDao {
+class CompDao {
   Database? _db;
 
-  static const String _tabela = 'tabvida';
+  static const String _tabela = 'comp';
   static const String _id = 'id';
   static const String _descricao = 'descricao';
   static const String _fonte = 'fonte';
   static const String _padrao = 'padrao';
+  static const String _especie_a = 'especie_a';
+  static const String _especie_b = 'especie_b';
 
   static const String tableSql = 'CREATE TABLE $_tabela('
       '$_id INTEGER PRIMARY KEY,'
       '$_descricao TEXT,'
       '$_fonte TEXT,'
+      '$_especie_a TEXT,'
+      '$_especie_b TEXT,'
       '$_padrao BOOLEAN'
       ')';
 
-  static const String _tabelaClasse = 'classe_tabvida';
-  static const String _idTabVida = 'id_tabvida';
-  static const String _idadeInicio = 'idade_inicio';
-  static const String _idadeFim = 'idade_fim';
-  static const String _sobreviventes = 'sobreviventes';
+  static const String _tabelaDados = 'dados_comp';
+  static const String _idComp = 'id_comp';
+  static const String _qtd_especie_a = 'qtd_especie_a';
+  static const String _qtd_especie_b = 'qtd_especie_b';
+  static const String _tempo = 'tempo';
 
-  static const String tableClasseSql = 'CREATE TABLE $_tabelaClasse('
+  static const String tableDadosSql = 'CREATE TABLE $_tabelaDados('
       '$_id INTEGER PRIMARY KEY,'
-      '$_idTabVida INTEGER,'
-      '$_idadeInicio INTEGER,'
-      '$_idadeFim INTEGER,'
-      '$_sobreviventes INTEGER,'
+      '$_idComp INTEGER,'
+      '$_qtd_especie_a INTEGER,'
+      '$_qtd_especie_b INTEGER,'
+      '$_tempo INTEGER,'
       ')';
 
 
-  List<TabVida> _tabVidas = [];
+  List<Comp> _comps = [];
   //salvar
-  Future<int> save(TabVida tabVida) async {
+  Future<int> save(Comp comp) async {
     //final Database db = await getDatabase();
     _db = await Connection.getDatabase();
 
-    Map<String, dynamic> tabVidaMap = _toMap(tabVida);
-    return _db!.insert(_tabela, tabVidaMap);
+    Map<String, dynamic> compMap = _toMap(comp);
+    return _db!.insert(_tabela, compMap);
   }
 
-  Map<String, dynamic> _toMap(TabVida tabVida) {
-    final Map<String, dynamic> tabVidaMap = Map();
-    tabVidaMap[_descricao] = tabVida.descricao;
-    tabVidaMap[_fonte] = tabVida.fonte;
-    tabVidaMap[_padrao] = tabVida.padrao;
-    return tabVidaMap;
+  Map<String, dynamic> _toMap(Comp comp) {
+    final Map<String, dynamic> compMap = Map();
+    compMap[_descricao] = comp.descricao;
+    compMap[_fonte] = comp.fonte;
+    compMap[_especie_a] = comp.especie_a;
+    compMap[_especie_b] = comp.especie_b;
+    compMap[_padrao] = comp.padrao;
+    return compMap;
   }
 
   //gegar todos
-  Future<List<TabVida>> findAll() async {
+  Future<List<Comp>> findAll() async {
     //final Database db = await getDatabase();
     _db = await Connection.getDatabase();
     final List<Map<String, dynamic>> resultado = await _db!.query(_tabela);
-    List<TabVida> tabVidas = _toList(resultado);
-    return tabVidas;
+    List<Comp> comps = _toList(resultado);
+    return comps;
   }
 
-  List<TabVida> _toList(List<Map<String, dynamic>> resultado) {
-    final List<TabVida> tabVidas = [];
+  List<Comp> _toList(List<Map<String, dynamic>> resultado) {
+    final List<Comp> comps = [];
     for (Map<String, dynamic> row in resultado) {
-      final TabVida tabVida = TabVida(
+      final Comp comp = Comp(
         row[_id],
         row[_descricao],
         "",
+        row[_especie_a],
+        row[_especie_b],
         fonte: row[_fonte],
         padrao: row[_padrao],
       );
-      tabVidas.add(tabVida);
+      comps.add(comp);
     }
-    return tabVidas;
+    return comps;
   }
 
   //delete
@@ -107,113 +114,102 @@ class TabVidaDao {
   }
 
   //atualizar
-  Future<int> update(TabVida tabVida) async {
+  Future<int> update(Comp comp) async {
     //final db = await getDatabase();
     _db = await Connection.getDatabase();
-    final resultado = await _db!.update(_tabela, _toMap(tabVida),
-        where: '$_id = ?', whereArgs: [tabVida.id]);
+    final resultado = await _db!.update(_tabela, _toMap(comp),
+        where: '$_id = ?', whereArgs: [comp.id]);
     return resultado;
   }
 
   //##########FIREBASE
-  Future<List<TabVida>> findAllFB(String url) async {
+  Future<List<Comp>> findAllFB(String url) async {
     //Exemplo: url = 'projetos_padrao/EXPO'
     final snapshot = (await ref.child(url).get());
-    final List<TabVida> tabVidas = [];
+    final List<Comp> comps = [];
     var i=0;
     while ( i < snapshot.children.length ){
       DataSnapshot data = snapshot.children.elementAt(i);
-      final TabVida tabVida = TabVida(
+      print(data.child("especie_a").value.toString());
+      final Comp comp = Comp(
           int.parse(data.child("id").value.toString()),
           data.child("descricao").value.toString(),
+          data.child("especie_a").value.toString(),
+          data.child("especie_b").value.toString(),
           data.key.toString(),
           fonte: data.child("fonte").value.toString(),
           padrao: data.child("padrao").value == 'true'
       );
-      tabVidas.add(tabVida);
+      comps.add(comp);
       i = i +1;
     }
-    _tabVidas = tabVidas;
-    return tabVidas;
+    _comps = comps;
+    return comps;
   }
 
-  Future<List<Map<String, dynamic>>> findClassesFB(String url) async {
+  Future<List<Map<String, dynamic>>> findDadosFB(String url) async {
     final snapshot = (await ref.child(url).get());
     final List<Map<String, dynamic>> dados = [];
     var i=0;
-    var Nini = 0;
     while ( i < snapshot.children.length ){
       DataSnapshot data = snapshot.children.elementAt(i);
-      var sobDepois = 0;
-      if (i+1<snapshot.children.length) {
-        DataSnapshot dataDepois = snapshot.children.elementAt(i + 1);
-        sobDepois = int.parse(dataDepois.child("sobreviventes").value.toString());
-      }
-      print(data.value);
       final Map<String, dynamic> dadosMap = Map();
-      var ini = "0";
-      var f = "0";
-      var s = "0";
-      ini = data.child("idade_inicio").value.toString();
-      f = data.child("idade_fim").value.toString();
-      s = data.child("sobreviventes").value.toString();
-      if (Nini == 0){
-        Nini = int.parse(s);
-      }
-      var I = int.parse(s)/Nini;
-      print("I"+I.toString());
-      var d = int.parse(s)-sobDepois;
-      var q = d/int.parse(s);
-      var p = 1 - q;
-      dadosMap['idade_inicio'] = ini;
-      dadosMap['idade_fim'] = f;
-      dadosMap['sobreviventes'] = s;
-      dadosMap['I'] = I.toStringAsFixed(3);
-      dadosMap['d'] = d.toString();
-      dadosMap['q'] = q.toStringAsFixed(3);
-      dadosMap['p'] = p.toStringAsFixed(3);
-
+      var a = "0";
+      var b = "0";
+      var t = "0";
+      a = data.child("qtd_especie_a").value.toString();
+      b = data.child("qtd_especie_b").value.toString();
+      t = data.child("tempo").value.toString();
+      dadosMap['qtd_especie_a'] = a;
+      dadosMap['qtd_especie_b'] = b;
+      dadosMap['tempo'] = t;
       dadosMap['key'] = data.key;
       dados.add(dadosMap);
       i = i +1;
     }
     return dados;
   }
-  Future<TabVida> findTabVidaFB(String url) async {
+  Future<Comp> findCompFB(String url) async {
     //Exemplo: url = 'projetos_padrao/EXPO'
     final snapshot = (await ref.child(url).get());
     DataSnapshot data = snapshot;
-    final TabVida tabVida = TabVida(
+    final Comp comp = Comp(
         int.parse(data.child("id").value.toString()),
         data.child("descricao").value.toString(),
+        data.child("especie_a").value.toString(),
+        data.child("especie_b").value.toString(),
         data.key.toString(),
         fonte: data.child("fonte").value.toString(),
-        padrao: data.child("padrao").value == 'true'
+        padrao: data.child("padrao").value == 'true',
     );
-    print(tabVida);
-    return tabVida;
+    print(comp);
+    return comp;
   }
 
-  Future<int> updateFB(TabVida tabVida, String url) async {
+  Future<int> updateFB(Comp comp, String url) async {
     final postData = {
-      'id': tabVida.id,
-      'descricao':tabVida.descricao,
-      'padrao': tabVida.padrao,
-      'fonte': tabVida.fonte,
+      'id': comp.id,
+      'descricao':comp.descricao,
+      'padrao': comp.padrao,
+      'fonte': comp.fonte,
+      'especie_a': comp.especie_a,
+      'especie_b': comp.especie_b,
     };
     final Map<String, Map> updates = {};
-    final key = tabVida.key;
+    final key = comp.key;
     updates['$url/$key'] = postData;
     ref.update(updates);
     return 0;
   }
 
-  Future<int> saveFB(TabVida tabVida, String url) async {
+  Future<int> saveFB(Comp comp, String url) async {
     final postData = {
       'id': 0,
-      'descricao':tabVida.descricao,
-      'padrao': tabVida.padrao,
-      'fonte': tabVida.fonte,
+      'descricao':comp.descricao,
+      'padrao': comp.padrao,
+      'fonte': comp.fonte,
+      'especie_a': comp.especie_a,
+      'especie_b': comp.especie_b,
     };
     //salva no FB
     final Map<String, Map> updates = {};
@@ -224,13 +220,13 @@ class TabVidaDao {
     return 0;
   }
 
-  Future<int> saveClasseFB(ClasseIdadeTabVida dado, String url) async {
+  Future<int> saveDadosFB(DadosComp dado, String url) async {
     final postData = {
       'id': 0,
-      'id_tabvida':dado.idTabVida,
-      'idade_inicio':dado.idade_inicio,
-      'idade_fim': dado.idade_fim,
-      'sobreviventes': dado.sobreviventes,
+      'id_comp':dado.idComp,
+      'qtd_especie_a':dado.qtd_especie_a,
+      'qtd_especie_b': dado.qtd_especie_b,
+      'tempo': dado.tempo,
     };
     //salva no FB
     final Map<String, Map> updates = {};
@@ -241,7 +237,7 @@ class TabVidaDao {
     return 0;
   }
 
-  Future<int> deleteClasseFB(String url, String Key) async {
+  Future<int> deleteDadosFB(String url, String Key) async {
     ref.child(url).child(Key).remove();
     return 0;
   }
