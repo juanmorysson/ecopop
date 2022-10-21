@@ -1,12 +1,9 @@
-import 'package:eco_pop/pop/pop.dart';
-import 'package:eco_pop/pop/pop_dao.dart';
-import 'package:eco_pop/pop/pop_view.dart';
 import 'package:eco_pop/tabvida/tabvida.dart';
 import 'package:eco_pop/tabvida/tabvida_dao.dart';
-import 'package:eco_pop/tabvida/tabvida_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class FormClasseTabVida extends StatefulWidget {
   @override
@@ -144,10 +141,10 @@ class FormClasseTabVidaState extends State<FormClasseTabVida> {
                 ],
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height*0.5,
-              child:
-               FutureBuilder<List<Map<String, dynamic>>>(
+            Flex(
+                    direction: Axis.vertical,
+                    children: [
+                      FutureBuilder<List<Map<String, dynamic>>>(
                   initialData: [],
                   future: _tabVidaDao.findClassesFB('$url$keyTab/classes'),
                   builder: (context, snapshot) {
@@ -208,6 +205,7 @@ class FormClasseTabVidaState extends State<FormClasseTabVida> {
                     }
                     return Text('Unknown error');
                   },),
+                ],
 
             )
 

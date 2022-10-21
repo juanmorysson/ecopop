@@ -187,6 +187,11 @@ class CompDao {
   }
 
   Future<int> updateFB(Comp comp, String url) async {
+    final Map<String, Map> updates = {};
+    final key = comp.key;
+    Object? dados = "";
+    final snapshot = (await ref.child("$url/$key/dados").get());
+    dados = snapshot.value;
     final postData = {
       'id': comp.id,
       'descricao':comp.descricao,
@@ -194,9 +199,8 @@ class CompDao {
       'fonte': comp.fonte,
       'especie_a': comp.especie_a,
       'especie_b': comp.especie_b,
+      'dados': dados
     };
-    final Map<String, Map> updates = {};
-    final key = comp.key;
     updates['$url/$key'] = postData;
     ref.update(updates);
     return 0;

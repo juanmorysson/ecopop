@@ -195,14 +195,19 @@ class TabVidaDao {
   }
 
   Future<int> updateFB(TabVida tabVida, String url) async {
+    final Map<String, Map> updates = {};
+    final key = tabVida.key;
+    Object? classes = "";
+    final snapshot = (await ref.child("$url/$key/classes").get());
+    classes = snapshot.value;
     final postData = {
       'id': tabVida.id,
       'descricao':tabVida.descricao,
       'padrao': tabVida.padrao,
       'fonte': tabVida.fonte,
+      'classes': classes
     };
-    final Map<String, Map> updates = {};
-    final key = tabVida.key;
+
     updates['$url/$key'] = postData;
     ref.update(updates);
     return 0;

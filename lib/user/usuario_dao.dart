@@ -40,8 +40,8 @@ class UsuarioDao {
   //salvar
   Future<int> save(Usuario usuario) async {
     final x = await userForEmail(usuario.email);
-    if (x.isNotEmpty){
-      usuario = Usuario(x.first.id, usuario.email, usuario.displayName, usuario.instituicao, usuario.key);
+    if (x != Null){
+      usuario = Usuario(x.id, usuario.email, usuario.displayName, usuario.instituicao, usuario.key);
       update(usuario);
     }else{
     _db = await Connection.getDatabase();
@@ -77,14 +77,14 @@ class UsuarioDao {
     }
     return user;
   }
-  Future<List<Usuario>> userForEmail(String email) async {
+  Future<Usuario> userForEmail(String email) async {
     //final Database db = await getDatabase();
     _db = await Connection.getDatabase();
     final List<Map<String, dynamic>> resultado = await _db!.query(_tabela,
         where: "$_email = ?",
         whereArgs: [email]);
     List<Usuario> usuarios = _toList(resultado);
-    return usuarios;
+    return usuarios.first;
   }
 
   //gegar todos
@@ -132,17 +132,23 @@ class UsuarioDao {
   }
 
   Future<int> saveFB(Usuario usuario) async {
+    Object? projetos = "";
+    var newPostKey = usuario.key;
+    if (usuario.key==""){
+      newPostKey =
+          ref.child('usuario').push().key;
+    }else{
+      final snapshot = (await ref.child("usuario/$newPostKey/projetos").get());
+      projetos = snapshot.value;
+    }
+
     final postData = {
       'id': 0,
       'email': usuario.email,
       'displayName': usuario.displayName,
-      'instituicao': usuario.instituicao
+      'instituicao': usuario.instituicao,
+      'projetos': projetos
     };
-    var newPostKey = usuario.key;
-    if (usuario.key==""){
-      newPostKey =
-        ref.child('usuario').push().key;
-    }
     //salva no FB
     final Map<String, Map> updates = {};
     updates['/usuario/$newPostKey'] = postData;

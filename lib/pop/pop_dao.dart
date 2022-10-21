@@ -194,6 +194,11 @@ class PopDao {
   }
 
   Future<int> updateFB(Pop pop, String url) async {
+    final Map<String, Map> updates = {};
+    final key = pop.key;
+    Object? dados = "";
+    final snapshot = (await ref.child("$url/$key/dados").get());
+    dados = snapshot.value;
     final postData = {
       'id': pop.id,
       'descricao':pop.descricao,
@@ -201,10 +206,9 @@ class PopDao {
       'formula': pop.formula,
       'fonte': pop.fonte,
       'experimento': pop.experimento,
-      'conceito': pop.conceito
+      'conceito': pop.conceito,
+      'dados': dados
     };
-    final Map<String, Map> updates = {};
-    final key = pop.key;
     updates['$url/$key'] = postData;
     ref.update(updates);
     return 0;

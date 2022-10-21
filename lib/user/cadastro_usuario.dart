@@ -32,10 +32,12 @@ class MeusDadosState extends State<MeusDados> {
   init(GoogleSignInAccount? user) async {
     _insts = await _instDao.findAllFB();
     _usuario = await _userDao.userForEmailFB(user!.email);
-    if (selected){
-
-    }else{
+    if (_usuario!.email.length != 0){
+      _nome_c.text = _usuario!.displayName.toString();
       _instituicao = await _instDao.findFB(_usuario!.instituicao.toString());
+      if (_instituicao != null){
+        _instituicao_c.text = _instituicao!.uuid.toString();
+      }
     }
 
   }
@@ -99,11 +101,10 @@ class MeusDadosState extends State<MeusDados> {
                         hint: const Text('Selecione a Instituição'),
                         elevation: 16,
                         onChanged: (Instituicao? instituicao) {
-                          setState(() {
+//                          setState(() {
                             _instituicao_c.text = instituicao!.uuid.toString();
                             this._instituicao = instituicao;
-                            selected = true;
-                          });
+//                          });
                         },
                         items: _insts!
                             .map<DropdownMenuItem<Instituicao>>((Instituicao item) {
